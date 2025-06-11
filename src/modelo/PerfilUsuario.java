@@ -4,6 +4,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
 
+/**
+ * Classe que representa o perfil de um usuário no sistema.
+ * O perfil contém informações adicionais como biografia, foto e habilidades.
+ */
 public class PerfilUsuario extends EntidadeBase {
     private String biografia;
     private String fotoPerfilUri;
@@ -11,11 +15,21 @@ public class PerfilUsuario extends EntidadeBase {
     private String usuarioId;
     private Usuario usuario;
 
+    /**
+     * Construtor padrão que inicializa o conjunto de habilidades
+     */
     public PerfilUsuario() {
         super();
         this.habilidades = new HashSet<>();
     }
 
+    /**
+     * Construtor completo para criação de um novo perfil de usuário
+     *
+     * @param id Identificador único do perfil
+     * @param biografia Descrição sobre o usuário
+     * @param fotoPerfilUri URI para a foto do usuário
+     */
     public PerfilUsuario(String id, String biografia, String fotoPerfilUri) {
         super(id);
         this.biografia = biografia;
@@ -83,9 +97,93 @@ public class PerfilUsuario extends EntidadeBase {
         }
     }
 
+    /**
+     * Verifica se o usuário possui determinada habilidade
+     *
+     * @param habilidade Nome da habilidade a ser verificada
+     * @return true se o usuário possuir a habilidade, false caso contrário
+     */
     public boolean temHabilidade(String habilidade) {
         return habilidade != null &&
                this.habilidades.contains(habilidade.trim().toLowerCase());
+    }
+
+    /**
+     * Verifica se o usuário possui determinada habilidade com um nível específico
+     * Este método é uma sobrecarga que permite verificar o nível de proficiência
+     *
+     * @param habilidade Nome da habilidade a ser verificada
+     * @param nivelMinimo Nível mínimo de proficiência requerido
+     * @return true se o usuário possuir a habilidade no nível especificado
+     */
+    public boolean temHabilidade(String habilidade, int nivelMinimo) {
+        // Em uma implementação real, armazenaria o nível de cada habilidade
+        // Por enquanto, estamos apenas exemplificando o polimorfismo
+        if (nivelMinimo <= 1) {
+            return temHabilidade(habilidade);
+        }
+        // Simulando um critério mais rigoroso para níveis mais altos
+        return temHabilidade(habilidade) && biografia != null &&
+               biografia.toLowerCase().contains(habilidade.toLowerCase());
+    }
+
+    /**
+     * Verifica se o perfil está completo com informações suficientes
+     *
+     * @return true se o perfil estiver completo, false caso contrário
+     */
+    public boolean isPerfilCompleto() {
+        return biografia != null && !biografia.trim().isEmpty() &&
+               !habilidades.isEmpty();
+    }
+
+    /**
+     * Retorna o nível de completude do perfil
+     *
+     * @return Percentual de completude do perfil (0-100)
+     */
+    public int calcularCompletudePercentual() {
+        int pontos = 0;
+        int total = 3; // Total de critérios avaliados
+
+        if (biografia != null && !biografia.trim().isEmpty()) pontos++;
+        if (fotoPerfilUri != null && !fotoPerfilUri.trim().isEmpty()) pontos++;
+        if (!habilidades.isEmpty()) pontos++;
+
+        return (pontos * 100) / total;
+    }
+
+    /**
+     * Calcula a compatibilidade deste perfil com outro baseado nas habilidades em comum
+     *
+     * @param outroPerfil Outro perfil para comparação
+     * @return Percentual de compatibilidade (0-100)
+     */
+    public int calcularCompatibilidade(PerfilUsuario outroPerfil) {
+        if (outroPerfil == null || habilidades.isEmpty() || outroPerfil.habilidades.isEmpty()) {
+            return 0;
+        }
+
+        Set<String> habilidadesComuns = new HashSet<>(habilidades);
+        habilidadesComuns.retainAll(outroPerfil.habilidades);
+
+        Set<String> todasHabilidades = new HashSet<>(habilidades);
+        todasHabilidades.addAll(outroPerfil.habilidades);
+
+        return todasHabilidades.isEmpty() ? 0 : (habilidadesComuns.size() * 100) / todasHabilidades.size();
+    }
+
+    @Override
+    public String getDescricaoEntidade() {
+        return "Perfil de usuário" +
+               (usuario != null ? " de " + usuario.getNome() : "") +
+               " - Habilidades: " + habilidades.size() +
+               " - Completude: " + calcularCompletudePercentual() + "%";
+    }
+
+    @Override
+    public boolean isValid() {
+        return usuarioId != null && !usuarioId.trim().isEmpty();
     }
 
     @Override

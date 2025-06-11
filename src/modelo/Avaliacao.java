@@ -3,6 +3,10 @@ package modelo;
 import java.sql.Timestamp;
 import java.util.Objects;
 
+/**
+ * Classe que representa uma avaliação feita por um usuário a uma solução.
+ * Uma avaliação contém uma nota, um comentário opcional e referências ao usuário avaliador e à solução avaliada.
+ */
 public class Avaliacao extends EntidadeBase {
     private int nota;
     private String comentario;
@@ -12,10 +16,22 @@ public class Avaliacao extends EntidadeBase {
     private Usuario usuarioAvaliador;
     private Solucao solucaoAvaliada;
 
+    /**
+     * Construtor padrão que inicializa a entidade com ID gerado automaticamente
+     */
     public Avaliacao() {
         super(); // Chama o construtor da classe pai.
     }
 
+    /**
+     * Construtor completo para criação de uma nova avaliação
+     *
+     * @param id Identificador único da avaliação
+     * @param nota Nota atribuída (de 0 a 5)
+     * @param comentario Comentário opcional sobre a avaliação
+     * @param solucaoId Identificador da solução avaliada
+     * @param usuarioAvaliadorId Identificador do usuário avaliador
+     */
     public Avaliacao(String id, int nota, String comentario, String solucaoId, String usuarioAvaliadorId) {
         super(id);
         this.nota = nota;
@@ -87,6 +103,82 @@ public class Avaliacao extends EntidadeBase {
         if (solucaoAvaliada != null) {
             this.solucaoId = solucaoAvaliada.getId();
         }
+    }
+
+    /**
+     * Verifica se a avaliação é positiva (nota maior ou igual a 3)
+     *
+     * @return true se a nota for maior ou igual a 3, false caso contrário
+     */
+    public boolean isAvaliaoPositiva() {
+        return nota >= 3;
+    }
+
+    /**
+     * Atualiza a avaliação com uma nova nota
+     *
+     * @param novaNota Nova nota a ser atribuída
+     */
+    public void atualizarAvaliacao(int novaNota) {
+        setNota(novaNota);
+        this.dataAvaliacao = new Timestamp(System.currentTimeMillis());
+    }
+
+    /**
+     * Atualiza a avaliação com uma nova nota e comentário
+     * Este método é uma sobrecarga que permite atualizar tanto a nota quanto o comentário
+     *
+     * @param novaNota Nova nota a ser atribuída
+     * @param novoComentario Novo comentário a ser atribuído
+     */
+    public void atualizarAvaliacao(int novaNota, String novoComentario) {
+        setNota(novaNota);
+        setComentario(novoComentario);
+        this.dataAvaliacao = new Timestamp(System.currentTimeMillis());
+    }
+
+    /**
+     * Verifica se uma avaliação pode ser considerada como "recomendação premium"
+     * Este método classifica as avaliações de acordo com critérios específicos
+     *
+     * @return true se a avaliação for "premium"
+     */
+    public boolean isRecomendacaoPremium() {
+        return nota >= 4 && comentario != null && comentario.length() >= 20;
+    }
+
+    /**
+     * Verifica se uma avaliação pode ser considerada como uma recomendação de determinado nível
+     * Este método é sobrecarregado para permitir diferentes critérios de classificação
+     *
+     * @param nivel Nível de exigência (1: alta, 2: média, 3: baixa)
+     * @return true se a avaliação atender aos critérios do nível especificado
+     */
+    public boolean isRecomendacao(int nivel) {
+        switch(nivel) {
+            case 1: // Alta exigência
+                return nota == 5 && comentario != null && comentario.length() >= 30;
+            case 2: // Média exigência
+                return nota >= 4 && comentario != null && comentario.length() >= 10;
+            case 3: // Baixa exigência
+                return nota >= 3;
+            default:
+                return isAvaliaoPositiva();
+        }
+    }
+
+    @Override
+    public String getDescricaoEntidade() {
+        String classificacao = isAvaliaoPositiva() ? "Positiva" : "Negativa";
+        return "Avaliação: Nota " + nota + " - " + classificacao +
+               (comentario != null && !comentario.isEmpty() ? " - Com comentário" : " - Sem comentário");
+    }
+
+    @Override
+    public boolean isValid() {
+        return nota >= 0 && nota <= 5 &&
+               solucaoId != null && !solucaoId.trim().isEmpty() &&
+               usuarioAvaliadorId != null && !usuarioAvaliadorId.trim().isEmpty();
     }
 
     @Override

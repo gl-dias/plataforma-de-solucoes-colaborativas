@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Classe que representa um projeto na plataforma de soluções colaborativas.
+ * Um projeto contém um conjunto de tarefas e está associado a um usuário responsável.
+ */
 public class Projeto extends EntidadeBase {
     private String titulo;
     private String descricao;
@@ -15,12 +19,23 @@ public class Projeto extends EntidadeBase {
     private List<Tarefa> tarefas;
     private Usuario responsavel;
 
+    /**
+     * Construtor padrão que inicializa a lista de tarefas e define o status inicial
+     */
     public Projeto() {
         super();
         this.tarefas = new ArrayList<>();
         this.status = "EM_ANDAMENTO";
     }
 
+    /**
+     * Construtor completo para criação de um novo projeto
+     *
+     * @param id Identificador único do projeto
+     * @param titulo Título do projeto
+     * @param descricao Descrição detalhada do projeto
+     * @param usuarioId Identificador do usuário responsável pelo projeto
+     */
     public Projeto(String id, String titulo, String descricao, String usuarioId) {
         super(id);
         this.titulo = titulo;
@@ -110,6 +125,11 @@ public class Projeto extends EntidadeBase {
         }
     }
 
+    /**
+     * Calcula o percentual de progresso do projeto baseado nas tarefas concluídas
+     *
+     * @return Percentual de conclusão do projeto (0-100)
+     */
     public double calcularProgresso() {
         if (tarefas.isEmpty()) {
             return 0.0;
@@ -120,8 +140,54 @@ public class Projeto extends EntidadeBase {
         return (double) tarefasConcluidas / tarefas.size() * 100;
     }
 
+    /**
+     * Verifica se o projeto está concluído
+     *
+     * @return true se o status for "CONCLUIDO", false caso contrário
+     */
     public boolean estaConcluido() {
         return "CONCLUIDO".equals(status);
+    }
+
+    /**
+     * Atualiza o status do projeto com base no progresso das tarefas.
+     * Este método é uma sobrecarga que permite especificar um limiar para considerar o projeto como concluído.
+     *
+     * @param limiarConclusao Percentual mínimo para considerar o projeto como concluído
+     * @return O novo status do projeto
+     */
+    public String atualizarStatus(double limiarConclusao) {
+        double progresso = calcularProgresso();
+        if (progresso >= limiarConclusao) {
+            this.status = "CONCLUIDO";
+            this.dataConclusao = new Timestamp(System.currentTimeMillis());
+        } else if (progresso > 0) {
+            this.status = "EM_ANDAMENTO";
+        } else {
+            this.status = "NAO_INICIADO";
+        }
+        return this.status;
+    }
+
+    /**
+     * Atualiza o status do projeto com base no progresso das tarefas.
+     * Utiliza o limiar padrão de 100% para considerar o projeto como concluído.
+     *
+     * @return O novo status do projeto
+     */
+    public String atualizarStatus() {
+        return atualizarStatus(100.0); // Por padrão, só considera concluído quando 100%
+    }
+
+    @Override
+    public String getDescricaoEntidade() {
+        return "Projeto: " + titulo + " - Status: " + status;
+    }
+
+    @Override
+    public boolean isValid() {
+        return titulo != null && !titulo.trim().isEmpty() &&
+               usuarioId != null && !usuarioId.trim().isEmpty();
     }
 
     @Override
