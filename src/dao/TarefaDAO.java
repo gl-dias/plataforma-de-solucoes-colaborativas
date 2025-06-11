@@ -8,9 +8,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import modelo.Solucao;
 import modelo.Tarefa;
 
-public class TarefaDAO implements BaseDAO {
+public class TarefaDAO implements BaseDAO<Tarefa> {
 
     private Connection connection;
 
@@ -41,12 +42,7 @@ public class TarefaDAO implements BaseDAO {
     }
 
     @Override
-    public void salvar(Object objeto) {
-        if (!(objeto instanceof Tarefa)) {
-            throw new IllegalArgumentException("Objeto deve ser do tipo Tarefa");
-        }
-
-        Tarefa tarefa = (Tarefa) objeto;
+    public void salvar(Tarefa tarefa) {
         String sql = "INSERT INTO tarefas (id, titulo, descricao, status, projeto_id, usuario_responsavel_id, prioridade) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement pstm = connection.prepareStatement(sql)) {
@@ -118,8 +114,8 @@ public class TarefaDAO implements BaseDAO {
     }
 
     @Override
-    public ArrayList<Object> listarTodosLazyLoading() {
-        ArrayList<Object> tarefas = new ArrayList<>();
+    public ArrayList<Tarefa> listarTodosLazyLoading() {
+        ArrayList<Tarefa> tarefas = new ArrayList<>();
         String sql = "SELECT * FROM tarefas";
 
         try (PreparedStatement pstm = connection.prepareStatement(sql);
@@ -135,12 +131,7 @@ public class TarefaDAO implements BaseDAO {
     }
 
     @Override
-    public void atualizar(Object objeto) {
-        if (!(objeto instanceof Tarefa)) {
-            throw new IllegalArgumentException("Objeto deve ser do tipo Tarefa");
-        }
-
-        Tarefa tarefa = (Tarefa) objeto;
+    public void atualizar(Tarefa tarefa) {
         String sql = "UPDATE tarefas SET titulo = ?, descricao = ?, status = ?, usuario_responsavel_id = ?, prioridade = ? WHERE id = ?";
 
         try (PreparedStatement pstm = connection.prepareStatement(sql)) {

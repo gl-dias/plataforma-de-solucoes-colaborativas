@@ -4,6 +4,7 @@ import modelo.*;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Main {
@@ -43,90 +44,99 @@ public class Main {
 
                 // Criação dos usuários
                 String userId1 = UUID.randomUUID().toString();
-                Usuario usuario1 = new Usuario(userId1, "Alice Silva", "alice@example.com", "senha123", perfil1);
+                Usuario usuario1 = new Usuario(userId1, "Alice Silva", "alice@example.com", "senha123");
+                usuario1.setPerfil(perfil1);
                 usuarioDAO.salvar(usuario1);
                 System.out.println("Usuário criado: " + usuario1);
 
                 String userId2 = UUID.randomUUID().toString();
-                Usuario usuario2 = new Usuario(userId2, "Bob Santos", "bob@example.com", "senha456", perfil2);
+                Usuario usuario2 = new Usuario(userId2, "Bob Santos", "bob@example.com", "senha456");
+                usuario2.setPerfil(perfil2);
                 usuarioDAO.salvar(usuario2);
                 System.out.println("Usuário criado: " + usuario2);
 
                 // Criação dos projetos
                 String projetoId1 = UUID.randomUUID().toString();
-                Projeto projeto1 = new Projeto(projetoId1, "Plataforma de Colaboração Online", "Desenvolver uma plataforma para gerenciamento de projetos.", "Ativo", usuario1);
+                Projeto projeto1 = new Projeto(projetoId1, "Plataforma de Colaboração Online", "Desenvolver uma plataforma para gerenciamento de projetos.", userId1);
+                projeto1.setStatus("EM_ANDAMENTO");
                 projetoDAO.salvar(projeto1);
                 System.out.println("Projeto criado: " + projeto1);
 
                 String projetoId2 = UUID.randomUUID().toString();
-                Projeto projeto2 = new Projeto(projetoId2, "Aplicativo de Lista de Tarefas", "Criar um aplicativo simples para organização pessoal.", "Em andamento", usuario2);
+                Projeto projeto2 = new Projeto(projetoId2, "Aplicativo de Lista de Tarefas", "Criar um aplicativo simples para organização pessoal.", userId2);
+                projeto2.setStatus("EM_ANDAMENTO");
                 projetoDAO.salvar(projeto2);
                 System.out.println("Projeto criado: " + projeto2);
 
                 // Criação das tarefas
                 String tarefaId1 = UUID.randomUUID().toString();
-                Tarefa tarefa1 = new Tarefa(tarefaId1, "Implementar autenticação de usuário", "Criar sistema de login e registro.", "Aberta", 100, projeto1);
+                Tarefa tarefa1 = new Tarefa(tarefaId1, "Implementar autenticação de usuário", "Criar sistema de login e registro.", projetoId1, userId1);
+                tarefa1.setPrioridade("ALTA");
                 tarefaDAO.salvar(tarefa1);
                 System.out.println("Tarefa criada: " + tarefa1);
 
                 String tarefaId2 = UUID.randomUUID().toString();
-                Tarefa tarefa2 = new Tarefa(tarefaId2, "Desenhar interface do usuário", "Criar wireframes e mockups para o aplicativo.", "Aberta", 150, projeto2);
+                Tarefa tarefa2 = new Tarefa(tarefaId2, "Desenhar interface do usuário", "Criar wireframes e mockups para o aplicativo.", projetoId2, userId2);
+                tarefa2.setPrioridade("MEDIA");
                 tarefaDAO.salvar(tarefa2);
                 System.out.println("Tarefa criada: " + tarefa2);
 
                 // Criação das soluções
                 String solucaoId1 = UUID.randomUUID().toString();
-                Solucao solucao1 = new Solucao(solucaoId1, "Código da autenticação com Spring Security.", usuario1, tarefa1, "Pendente");
+                Solucao solucao1 = new Solucao(solucaoId1, "Código da autenticação com Spring Security.", "Implementação completa do módulo de autenticação.", tarefaId1, userId1);
+                solucao1.setStatus("PENDENTE");
                 solucaoDAO.salvar(solucao1);
                 System.out.println("Solução criada: " + solucao1);
 
                 String solucaoId2 = UUID.randomUUID().toString();
-                Solucao solucao2 = new Solucao(solucaoId2, "Mockups de alta fidelidade para o app.", usuario2, tarefa2, "Pendente");
+                Solucao solucao2 = new Solucao(solucaoId2, "Mockups de alta fidelidade para o app.", "Design completo das telas principais.", tarefaId2, userId2);
+                solucao2.setStatus("PENDENTE");
                 solucaoDAO.salvar(solucao2);
                 System.out.println("Solução criada: " + solucao2);
 
                 // Criação das avaliações
                 String avaliacaoId1 = UUID.randomUUID().toString();
-                Avaliacao avaliacao1 = new Avaliacao(avaliacaoId1, 4, "Ótima implementação, segura e bem documentada.", usuario2, solucao1);
+                Avaliacao avaliacao1 = new Avaliacao(avaliacaoId1, 4, "Ótima implementação, segura e bem documentada.", solucaoId1, userId2);
                 avaliacaoDAO.salvar(avaliacao1);
                 System.out.println("Avaliação criada: " + avaliacao1);
 
                 String avaliacaoId2 = UUID.randomUUID().toString();
-                Avaliacao avaliacao2 = new Avaliacao(avaliacaoId2, 5, "Design inovador e intuitivo. Excelente trabalho!", usuario1, solucao2);
+                Avaliacao avaliacao2 = new Avaliacao(avaliacaoId2, 5, "Design inovador e intuitivo. Excelente trabalho!", solucaoId2, userId1);
                 avaliacaoDAO.salvar(avaliacao2);
                 System.out.println("Avaliação criada: " + avaliacao2);
 
                 // Testes de leitura
                 System.out.println("\n--- Testes de Leitura ---");
-                Object foundUsuario = usuarioDAO.buscarPorId(userId1);
+                Usuario foundUsuario = (Usuario) usuarioDAO.buscarPorId(userId1);
                 System.out.println("Usuário encontrado por ID: " + foundUsuario);
 
-                ArrayList<Object> projetos = projetoDAO.listarTodosLazyLoading();
+                List<Projeto> projetos = projetoDAO.listarTodosLazyLoading();
                 System.out.println("\nTodos os Projetos:");
-                for (Object obj : projetos) {
-                    if (obj instanceof Projeto) {
-                        Projeto p = (Projeto) obj;
-                        System.out.println("  " + p);
-                    }
+                for (Projeto p : projetos) {
+                    System.out.println("  " + p);
                 }
 
-                Object foundSolucao = solucaoDAO.buscarPorId(solucaoId1);
+                Solucao foundSolucao = (Solucao) solucaoDAO.buscarPorId(solucaoId1);
                 System.out.println("\nSolução encontrada por ID: " + foundSolucao);
 
                 // Testes de atualização
                 System.out.println("\n--- Testes de Atualização ---");
-                if (foundUsuario instanceof Usuario) {
-                    Usuario u = (Usuario) foundUsuario;
-                    u.setNome("Alice Pereira");
-                    u.setEmail("alice.pereira@example.com");
-                    usuarioDAO.atualizar(u);
-                    System.out.println("Usuário atualizado: " + usuarioDAO.buscarPorId(userId1));
-                }
+                foundUsuario.setNome("Alice Pereira");
+                foundUsuario.setEmail("alice.pereira@example.com");
+                usuarioDAO.atualizar(foundUsuario);
+                Usuario usuarioAtualizado = (Usuario) usuarioDAO.buscarPorId(userId1);
+                System.out.println("Usuário atualizado: " + usuarioAtualizado);
 
                 // Testes de exclusão
                 System.out.println("\n--- Testes de Deleção ---");
                 avaliacaoDAO.excluir(avaliacaoId1);
                 System.out.println("Avaliação excluída");
+
+                solucaoDAO.excluir(solucaoId2);
+                System.out.println("Solução excluída");
+
+                tarefaDAO.excluir(tarefaId2);
+                System.out.println("Tarefa excluída");
 
                 projetoDAO.excluir(projetoId2);
                 System.out.println("Projeto excluído");

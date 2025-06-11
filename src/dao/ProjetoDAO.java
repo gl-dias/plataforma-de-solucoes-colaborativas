@@ -9,9 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import modelo.Projeto;
+import modelo.Tarefa;
 import modelo.Usuario;
 
-public class ProjetoDAO implements BaseDAO {
+public class ProjetoDAO implements BaseDAO<Projeto> {
 
     private Connection connection;
 
@@ -39,12 +40,7 @@ public class ProjetoDAO implements BaseDAO {
     }
 
     @Override
-    public void salvar(Object objeto) {
-        if (!(objeto instanceof Projeto)) {
-            throw new IllegalArgumentException("Objeto deve ser do tipo Projeto");
-        }
-
-        Projeto projeto = (Projeto) objeto;
+    public void salvar(Projeto projeto) {
         String sql = "INSERT INTO projetos (id, titulo, descricao, usuario_id, status) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement pstm = connection.prepareStatement(sql)) {
@@ -96,8 +92,8 @@ public class ProjetoDAO implements BaseDAO {
     }
 
     @Override
-    public ArrayList<Object> listarTodosLazyLoading() {
-        ArrayList<Object> projetos = new ArrayList<>();
+    public ArrayList<Projeto> listarTodosLazyLoading() {
+        ArrayList<Projeto> projetos = new ArrayList<>();
         String sql = "SELECT * FROM projetos";
 
         try (PreparedStatement pstm = connection.prepareStatement(sql);
@@ -113,12 +109,7 @@ public class ProjetoDAO implements BaseDAO {
     }
 
     @Override
-    public void atualizar(Object objeto) {
-        if (!(objeto instanceof Projeto)) {
-            throw new IllegalArgumentException("Objeto deve ser do tipo Projeto");
-        }
-
-        Projeto projeto = (Projeto) objeto;
+    public void atualizar(Projeto projeto) {
         String sql = "UPDATE projetos SET titulo = ?, descricao = ?, status = ? WHERE id = ?";
 
         try (PreparedStatement pstm = connection.prepareStatement(sql)) {
@@ -157,7 +148,7 @@ public class ProjetoDAO implements BaseDAO {
 
     private void excluirTarefasRelacionadas(String projetoId) {
         TarefaDAO tarefaDAO = new TarefaDAO(connection);
-        List<Object> tarefas = tarefaDAO.buscarPorProjeto(projetoId);
+        List<Tarefa> tarefas = tarefaDAO.buscarPorProjeto(projetoId);
 
         for (Object obj : tarefas) {
             tarefaDAO.excluir(((Tarefa)obj).getId());

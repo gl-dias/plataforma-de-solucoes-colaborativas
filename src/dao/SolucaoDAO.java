@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import modelo.Solucao;
 
-public class SolucaoDAO implements BaseDAO {
+public class SolucaoDAO implements BaseDAO<Solucao> {
 
     private Connection connection;
 
@@ -37,12 +37,7 @@ public class SolucaoDAO implements BaseDAO {
     }
 
     @Override
-    public void salvar(Object objeto) {
-        if (!(objeto instanceof Solucao)) {
-            throw new IllegalArgumentException("Objeto deve ser do tipo Solucao");
-        }
-
-        Solucao solucao = (Solucao) objeto;
+    public void salvar(Solucao solucao) {
         String sql = "INSERT INTO solucoes (id, titulo, descricao, tarefa_id, usuario_id, status) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement pstm = connection.prepareStatement(sql)) {
@@ -113,8 +108,8 @@ public class SolucaoDAO implements BaseDAO {
     }
 
     @Override
-    public ArrayList<Object> listarTodosLazyLoading() {
-        ArrayList<Object> solucoes = new ArrayList<>();
+    public ArrayList<Solucao> listarTodosLazyLoading() {
+        ArrayList<Solucao> solucoes = new ArrayList<>();
         String sql = "SELECT * FROM solucoes";
 
         try (PreparedStatement pstm = connection.prepareStatement(sql);
@@ -130,12 +125,7 @@ public class SolucaoDAO implements BaseDAO {
     }
 
     @Override
-    public void atualizar(Object objeto) {
-        if (!(objeto instanceof Solucao)) {
-            throw new IllegalArgumentException("Objeto deve ser do tipo Solucao");
-        }
-
-        Solucao solucao = (Solucao) objeto;
+    public void atualizar(Solucao solucao) {
         String sql = "UPDATE solucoes SET titulo = ?, descricao = ?, status = ? WHERE id = ?";
 
         try (PreparedStatement pstm = connection.prepareStatement(sql)) {

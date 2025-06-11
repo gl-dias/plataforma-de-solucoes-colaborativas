@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import modelo.Avaliacao;
 
-public class AvaliacaoDAO implements BaseDAO {
+public class AvaliacaoDAO implements BaseDAO<Avaliacao> {
 
     private Connection connection;
 
@@ -38,12 +38,7 @@ public class AvaliacaoDAO implements BaseDAO {
     }
 
     @Override
-    public void salvar(Object objeto) {
-        if (!(objeto instanceof Avaliacao)) {
-            throw new IllegalArgumentException("Objeto deve ser do tipo Avaliacao");
-        }
-
-        Avaliacao avaliacao = (Avaliacao) objeto;
+    public void salvar(Avaliacao avaliacao) {
         String sql = "INSERT INTO avaliacoes (id, nota, comentario, solucao_id, usuario_avaliador_id) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement pstm = connection.prepareStatement(sql)) {
@@ -113,8 +108,8 @@ public class AvaliacaoDAO implements BaseDAO {
     }
 
     @Override
-    public ArrayList<Object> listarTodosLazyLoading() {
-        ArrayList<Object> avaliacoes = new ArrayList<>();
+    public ArrayList<Avaliacao> listarTodosLazyLoading() {
+        ArrayList<Avaliacao> avaliacoes = new ArrayList<>();
         String sql = "SELECT * FROM avaliacoes";
 
         try (PreparedStatement pstm = connection.prepareStatement(sql);
@@ -130,12 +125,7 @@ public class AvaliacaoDAO implements BaseDAO {
     }
 
     @Override
-    public void atualizar(Object objeto) {
-        if (!(objeto instanceof Avaliacao)) {
-            throw new IllegalArgumentException("Objeto deve ser do tipo Avaliacao");
-        }
-
-        Avaliacao avaliacao = (Avaliacao) objeto;
+    public void atualizar(Avaliacao avaliacao) {
         String sql = "UPDATE avaliacoes SET nota = ?, comentario = ? WHERE id = ?";
 
         try (PreparedStatement pstm = connection.prepareStatement(sql)) {

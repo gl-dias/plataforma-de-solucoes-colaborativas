@@ -2,15 +2,10 @@ package dao;
 
 import java.util.ArrayList;
 
-public interface BaseDAO {
-
-    void salvar(Object objeto);
-
+public interface BaseDAO<T> {
+    void salvar(T objeto);
     Object buscarPorId(String id);
-
-    ArrayList<Object> listarTodosLazyLoading();
-
-    void atualizar(Object objeto);
-
+    ArrayList<T> listarTodosLazyLoading();
+    void atualizar(T objeto);
     void excluir(String id);
 }

@@ -11,7 +11,7 @@ import java.util.Map;
 import modelo.Usuario;
 import modelo.PerfilUsuario;
 
-public class UsuarioDAO implements BaseDAO {
+public class UsuarioDAO implements BaseDAO<Usuario> {
 
     private Connection connection;
 
@@ -37,12 +37,7 @@ public class UsuarioDAO implements BaseDAO {
     }
 
     @Override
-    public void salvar(Object objeto) {
-        if (!(objeto instanceof Usuario)) {
-            throw new IllegalArgumentException("Objeto deve ser do tipo Usuario");
-        }
-
-        Usuario usuario = (Usuario) objeto;
+    public void salvar(Usuario usuario) {
         String sql = "INSERT INTO usuario (id, nome, email, senha_criptografada) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement pstm = connection.prepareStatement(sql)) {
@@ -92,8 +87,8 @@ public class UsuarioDAO implements BaseDAO {
     }
 
     @Override
-    public ArrayList<Object> listarTodosLazyLoading() {
-        ArrayList<Object> usuarios = new ArrayList<>();
+    public ArrayList<Usuario> listarTodosLazyLoading() {
+        ArrayList<Usuario> usuarios = new ArrayList<>();
         String sql = "SELECT * FROM usuario WHERE ativo = true";
 
         try (PreparedStatement pstm = connection.prepareStatement(sql);
@@ -109,12 +104,7 @@ public class UsuarioDAO implements BaseDAO {
     }
 
     @Override
-    public void atualizar(Object objeto) {
-        if (!(objeto instanceof Usuario)) {
-            throw new IllegalArgumentException("Objeto deve ser do tipo Usuario");
-        }
-
-        Usuario usuario = (Usuario) objeto;
+    public void atualizar(Usuario usuario) {
         String sql = "UPDATE usuario SET nome = ?, email = ? WHERE id = ? AND ativo = true";
 
         try (PreparedStatement pstm = connection.prepareStatement(sql)) {

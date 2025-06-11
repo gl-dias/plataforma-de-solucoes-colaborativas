@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import modelo.PerfilUsuario;
 
-public class PerfilUsuarioDAO implements BaseDAO {
+public class PerfilUsuarioDAO implements BaseDAO<PerfilUsuario> {
 
     private Connection connection;
 
@@ -31,13 +31,7 @@ public class PerfilUsuarioDAO implements BaseDAO {
     }
 
     @Override
-    public void salvar(Object objeto) {
-        if (!(objeto instanceof PerfilUsuario)) {
-            throw new IllegalArgumentException("Objeto deve ser do tipo PerfilUsuario.");
-        }
-
-        PerfilUsuario perfil = (PerfilUsuario) objeto;
-
+    public void salvar(PerfilUsuario perfil) {
         try {
             String sql = "INSERT INTO perfil_usuario (id, biografia, foto_perfil_uri, habilidades) VALUES (?, ?, ?, ?)";
 
@@ -91,8 +85,8 @@ public class PerfilUsuarioDAO implements BaseDAO {
     }
 
     @Override
-    public ArrayList<Object> listarTodosLazyLoading() {
-        ArrayList<Object> perfis = new ArrayList<>();
+    public ArrayList<PerfilUsuario> listarTodosLazyLoading() {
+        ArrayList<PerfilUsuario> perfis = new ArrayList<>();
 
         try {
             String sql = "SELECT id, biografia, foto_perfil_uri, habilidades FROM perfil_usuario";
@@ -124,13 +118,7 @@ public class PerfilUsuarioDAO implements BaseDAO {
     }
 
     @Override
-    public void atualizar(Object objeto) {
-        if (!(objeto instanceof PerfilUsuario)) {
-            throw new IllegalArgumentException("Objeto deve ser do tipo PerfilUsuario.");
-        }
-
-        PerfilUsuario perfil = (PerfilUsuario) objeto;
-
+    public void atualizar(PerfilUsuario perfil) {
         try {
             String sql = "UPDATE perfil_usuario SET biografia = ?, foto_perfil_uri = ?, habilidades = ? WHERE id = ?";
 
@@ -171,5 +159,3 @@ public class PerfilUsuarioDAO implements BaseDAO {
         }
     }
 }
-
-
