@@ -1,17 +1,20 @@
 package modelo;
 
 import java.util.Objects;
-import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class EntidadeBase implements InterfaceEntidadeBase {
     private String id;
+    // Contador estático compartilhado por todas as entidades para gerar IDs incrementais
+    private static final AtomicInteger contador = new AtomicInteger(1);
 
     protected EntidadeBase() {
-        this.id = UUID.randomUUID().toString();
+        // Gera um ID incremental automaticamente
+        this.id = String.valueOf(contador.getAndIncrement());
     }
 
     protected EntidadeBase(String id) {
-        this.id = id != null ? id : UUID.randomUUID().toString();
+        this.id = id != null ? id : String.valueOf(contador.getAndIncrement());
     }
 
     @Override
@@ -26,6 +29,19 @@ public abstract class EntidadeBase implements InterfaceEntidadeBase {
         }
         this.id = id;
     }
+
+    /**
+     * Método abstrato que deve ser implementado por todas as subclasses
+     * para fornecer uma descrição significativa da entidade.
+     * @return String com a descrição da entidade
+     */
+    public abstract String getDescricaoEntidade();
+
+    /**
+     * Verifica se a entidade é válida para persistência
+     * @return true se a entidade estiver válida, false caso contrário
+     */
+    public abstract boolean isValid();
 
     @Override
     public boolean equals(Object o) {
