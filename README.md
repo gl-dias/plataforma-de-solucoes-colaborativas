@@ -1,5 +1,12 @@
 # Plataforma de Soluções Colaborativas
 
+## Integrantes do Grupo
+| Integrante | Matrícula |
+| ------------- | ------------- |
+| Guilherme Dias  | Content Cell  |
+| Guilherme Pardelhas  | Content Cell  |
+| Guilherme Resende  | 202402075365  |
+
 Sistema colaborativo para gerenciamento de projetos desenvolvido em Java com persistência em MySQL.
 
 ## 📋 Pré-requisitos
