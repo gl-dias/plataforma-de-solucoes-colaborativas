@@ -3,8 +3,8 @@
 ## Integrantes do Grupo
 | Integrante | Matrícula |
 | ------------- | ------------- |
-| Guilherme Dias  | Content Cell  |
-| Guilherme Pardelhas  | Content Cell  |
+| Guilherme Dias  | 202402972091  |
+| Guilherme Pardelhas  | 202402697668  |
 | Guilherme Resende  | 202402075365  |
 
 Sistema colaborativo para gerenciamento de projetos desenvolvido em Java com persistência em MySQL.
