@@ -10,7 +10,7 @@ Sistema colaborativo para gerenciamento de projetos desenvolvido em Java com per
 | Guilherme Resende  | 202402075365  |
 
 ## Arquivos Importantes
-- [Documento PDF](https://github.com/gl-dias/plataforma-de-solucoes-colaborativas/blob/master/Plataforma%20de%20Soluções%20Colaborativas%20-%20Documentaç...%20(2).pdf)
+- [Documento PDF](https://github.com/gl-dias/plataforma-de-solucoes-colaborativas/blob/master/Documentacao.pdf)
 - [Diagrama de Classes](https://github.com/gl-dias/plataforma-de-solucoes-colaborativas/blob/master/diagrama-de-classes.png)
 - [Diagrama Entidade-Relacionamento](https://github.com/gl-dias/plataforma-de-solucoes-colaborativas/blob/master/er.png)
 - [Script SQL](https://github.com/gl-dias/plataforma-de-solucoes-colaborativas/blob/master/script.sql)
